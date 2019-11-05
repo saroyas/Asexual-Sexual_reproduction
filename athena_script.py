@@ -3,6 +3,7 @@ import random
 
 import numpy as np
 
+print('okay, the script has started up')
 
 
 def fitness_landscape(organism_column):
@@ -131,6 +132,8 @@ class world():
             print('Post Asexual Pop Size: ', self.population_sizes(asex=True))
             print('Post Total Pop Size: ', self.population_sizes(total=True))
 
+            
+print('beggining iterations')
 
 lengths = []
 sexual_success = 0
@@ -138,6 +141,8 @@ asexual_success = 0
 for i in range(500):
     gia = world(1000, 5, 100, 10, 0.5, 0.8, 10/8, 10/8, 0.02)
     for x in range(10000):
+        if x%500==0:
+            print('world iteration: ',x)
         gia.iteration()
         if gia.separator>900:
             asexual_success += 1
