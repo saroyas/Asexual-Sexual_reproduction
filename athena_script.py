@@ -1,15 +1,8 @@
-import matplotlib.pyplot as plt
-import itertools
+
 import random
-import copy
+
 import numpy as np
-import matplotlib
-import matplotlib.pyplot as plt
-from scipy.ndimage import convolve
-from operator import itemgetter
-from itertools import groupby
-import statistics
-import math
+
 
 
 def fitness_landscape(organism_column):
