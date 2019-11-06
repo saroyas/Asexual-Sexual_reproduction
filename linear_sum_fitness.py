@@ -149,7 +149,7 @@ list_statistics = []
 sexual_success = 0
 asexual_success = 0
 with open("results.txt", "w") as myfile:
-    print('initialized file')
+    myfile.write('Thread one has begun \n')
 for i in range(100):
     statistics_per_world = []
     print('world iteration: ',i)
