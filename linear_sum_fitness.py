@@ -149,27 +149,28 @@ list_statistics = []
 sexual_success = 0
 asexual_success = 0
 with open("results.txt", "a") as myfile:
-    for i in range(100):
-        statistics_per_world = []
-        print('world iteration: ',i)
-        myfile.write('The process has begun')
-        gia = world(5000, 5, 100, 10, 0.5, 0.8, 10/8, 10/8, 0.02)
-        for x in range(10000):
-            if x%200 == 0:
-                gia.iteration(post_text=True, avg_fitness=True)
-            else:
-                gia.iteration()
-            statistics_per_world.append(gia.species_fitness_statistics())
-            if gia.separator>4900:
-                asexual_success += 1
-                break
-            if gia.separator<100:
-                sexual_success+=1
-                break
-        list_statistics.append(statistics_per_world)
-        print('SEX:', sexual_success, 'ASEX:', asexual_success)
+for i in range(100):
+    statistics_per_world = []
+    print('world iteration: ',i)
+    myfile.write('The process has begun')
+    gia = world(5000, 5, 100, 10, 0.5, 0.8, 10/8, 10/8, 0.02)
+    for x in range(10000):
+        if x%200 == 0:
+            gia.iteration(post_text=True, avg_fitness=True)
+        else:
+            gia.iteration()
+        statistics_per_world.append(gia.species_fitness_statistics())
+        if gia.separator>4900:
+            asexual_success += 1
+            break
+        if gia.separator<100:
+            sexual_success+=1
+            break
+    list_statistics.append(statistics_per_world)
+    print('SEX:', sexual_success, 'ASEX:', asexual_success)
+    with open("results.txt", "a") as myfile:
         myfile.write('SEX:'+ int(sexual_success)+ 'ASEX:'+ int(asexual_success))
-        lengths.append(x)
+    lengths.append(x)
 
 
 out1 = 'Sex:' + str(sexual_success) +' Asex:'+ str(asexual_success)
