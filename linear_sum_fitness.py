@@ -1,11 +1,11 @@
 
 import random
-
+import pickle
 import numpy as np
 
 
 def fitness_landscape(organism_column):
-    fitness_value_for_organism = 1
+    fitness_value_for_organism = np.sum(organism_column)
     return fitness_value_for_organism
 
 
@@ -20,7 +20,7 @@ class world():
         self.sex_repl_ratio = sex_repl_ratio
         self.total_pop_mat = (np.random.normal(gene_mean, gene_sd, (loci, self.population_size))).astype(int)
         self.separator = int(
-            self.population_size * proportion_asexual)  # To indicate where the asex ends and sex begins
+        self.population_size * proportion_asexual)  # To indicate where the asex ends and sex begins
         self.mutation_prob = mutation_prob
 
     def population_sizes(self, total=False, asex=False, sex=False):
@@ -40,6 +40,16 @@ class world():
 
     def calc_fitness_array(self):
         self.fitness_array = np.apply_along_axis(fitness_landscape, 0, self.total_pop_mat)
+
+    def species_fitness_statistics(self):
+        self.calc_fitness_array()
+        asex_fitness_array = self.fitness_array[:self.separator]
+        asex_avg = np.average(asex_fitness_array)
+        asex_std = np.std(asex_fitness_array)
+        sex_fitness_array = self.fitness_array[self.separator:]
+        sex_avg = np.average(sex_fitness_array)
+        sex_std = np.std(sex_fitness_array)
+        return asex_avg, asex_std, sex_avg, sex_std
 
     def survival_probability(self):
         # For now we make survival probability simply proportionate to
@@ -88,11 +98,11 @@ class world():
             next_gen = []
             for pair in chosen_pairs:
                 parent_1, parent_2 = pair
-                parent_1_gene_index = np.random.randint(2, size=(1, self.loci))
+                parent_1_gene_index = np.random.randint(2, size=(self.loci))
                 parent_1_genes = np.reshape(np.multiply(self.sex_pop_mat[:, parent_1], parent_1_gene_index), self.loci)
                 parent_2_gene_index = self.ones - parent_1_gene_index
                 parent_2_genes = np.reshape(np.multiply(self.sex_pop_mat[:, parent_2], parent_2_gene_index), self.loci)
-                child = np.multiply(parent_1_genes, parent_2_genes)
+                child = np.add(parent_1_genes, parent_2_genes)
                 next_gen.append(child)
             return np.transpose(np.asarray(next_gen))
 
@@ -107,7 +117,6 @@ class world():
     def replication_stage(self, pop_size_preserving=False):
         def gen_sex_asex_matrices(self):
             return self.total_pop_mat[:, :self.separator], self.total_pop_mat[:, self.separator:]
-
         self.asex_pop_mat, self.sex_pop_mat = gen_sex_asex_matrices(self)
         if pop_size_preserving == True:
             self.pop_size_preserving_repl_rates()
@@ -117,12 +126,16 @@ class world():
         self.total_pop_mat = np.concatenate([self.asex_pop_mat, self.sex_pop_mat], axis=1)
         self.separator = self.asex_pop_mat.shape[1]
 
-    def iteration(self, post_text=False, pre_text=False):
+    def iteration(self, post_text=False, pre_text=False, avg_fitness =False):
         if pre_text == True:
             print('Pre Sexual size: ', self.population_sizes(sex=True))
             print('Pre Asexual Pop Size: ', self.population_sizes(asex=True))
         self.mutation_stage()
         self.survival_stage()
+        if avg_fitness==True:
+            asex_avg, asex_std, sex_avg, sex_std = self.species_fitness_statistics()
+            print('ASEX AVG FITNESS: ', asex_avg,' std', asex_std)
+            print('SEX AVG FITNESS:', sex_avg, 'std', sex_std)
         self.replication_stage(pop_size_preserving=True)
         if post_text == True:
             print('----------------------------------')
@@ -132,22 +145,33 @@ class world():
 
 
 lengths = []
+list_statistics = []
 sexual_success = 0
 asexual_success = 0
-for i in range(100):
+for i in range(500):
+    statistics_per_world = []
     print('world iteration: ',i)
-    gia = world(1000, 5, 100, 10, 0.5, 0.8, 10/8, 10/8, 0.02)
+    gia = world(5000, 5, 100, 10, 0.5, 0.8, 10/8, 10/8, 0.02)
     for x in range(10000):
         gia.iteration()
-        if gia.separator>900:
+        statistics_per_world.append(gia.species_fitness_statistics())
+        if gia.separator>4900:
             asexual_success += 1
             break
         if gia.separator<100:
             sexual_success+=1
             break
+    list_statistics.append(statistics_per_world)
     print('SEX:', sexual_success, 'ASEX:', asexual_success)
     lengths.append(x)
 
-with open('athena_script_results', 'w') as file:
-    file.write('Sex:', sexual_success,' Asex:', asexual_success)
-    file.write('AVG: ',np.average(lengths),' STD:', np.stf(lengths))d 
+
+out1 = 'Sex:' + str(sexual_success) +' Asex:'+ str(asexual_success)
+out2 = 'AVG: '+ str(np.average(lengths))+' STD:'+ str(np.std(lengths))
+
+# Saving the objects:
+with open('objs.pkl', 'w') as f:  # Python 3: open(..., 'wb')
+    pickle.dump([out1, out2, list_statistics], f)
+
+#with open('objs.pkl') as f:  # Python 3: open(..., 'rb')
+#    obj0, obj1, obj2 = pickle.load(f)
