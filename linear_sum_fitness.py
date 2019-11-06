@@ -148,12 +148,12 @@ lengths = []
 list_statistics = []
 sexual_success = 0
 asexual_success = 0
-with open("results.txt", "a") as myfile:
 for i in range(100):
     statistics_per_world = []
     print('world iteration: ',i)
-    myfile.write('The process has begun')
     gia = world(5000, 5, 100, 10, 0.5, 0.8, 10/8, 10/8, 0.02)
+    with open("results.txt", "a") as myfile:
+        myfile.write('process begun')
     for x in range(10000):
         if x%200 == 0:
             gia.iteration(post_text=True, avg_fitness=True)
