@@ -156,7 +156,7 @@ for i in range(100):
     gia = world(5000, 5, 100, 10, 0.5, 0.8, 10/8, 10/8, 0.02)
     for x in range(10000):
         if x%200 == 0:
-            gia.iteration(post_text=True, avg_fitness=True)
+            gia.iteration()
         else:
             gia.iteration()
         statistics_per_world.append(gia.species_fitness_statistics())
