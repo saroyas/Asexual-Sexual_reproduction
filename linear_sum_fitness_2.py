@@ -149,18 +149,18 @@ list_statistics = []
 sexual_success = 0
 asexual_success = 0
 with open("results2.txt", "w") as myfile:
-    myfile.write('Thread 2 has begun \n')
+    myfile.write('Thread one has begun \n')
 for i in range(100):
     statistics_per_world = []
     print('world iteration: ',i)
-    gia = world(5000, 5, 100, 10, 0.5, 0.8, 10/8, 10/8, 0.02)
+    gia = world(2500, 5, 100, 10, 0.5, 0.8, 10/8, 10/8, 0.02)
     for x in range(10000):
-        if x%200 == 0:
+        if x%1000 == 0:
             gia.iteration(post_text=True, avg_fitness=True)
         else:
             gia.iteration()
         statistics_per_world.append(gia.species_fitness_statistics())
-        if gia.separator>4900:
+        if gia.separator>2400:
             asexual_success += 1
             break
         if gia.separator<100:
@@ -177,7 +177,7 @@ out1 = 'Sex:' + str(sexual_success) +' Asex:'+ str(asexual_success)
 out2 = 'AVG: '+ str(np.average(lengths))+' STD:'+ str(np.std(lengths))
 
 # Saving the objects:
-with open('objs2.pkl', 'wb') as f:  # Python 3: open(..., 'wb')
+with open('objs.pkl', 'wb') as f:  # Python 3: open(..., 'wb')
     pickle.dump([out1, out2, list_statistics], f)
 
 #with open('objs.pkl') as f:  # Python 3: open(..., 'rb')

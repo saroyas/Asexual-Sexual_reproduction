@@ -153,14 +153,14 @@ with open("results.txt", "w") as myfile:
 for i in range(100):
     statistics_per_world = []
     print('world iteration: ',i)
-    gia = world(5000, 5, 100, 10, 0.5, 0.8, 10/8, 10/8, 0.02)
+    gia = world(2500, 5, 100, 10, 0.5, 0.8, 10/8, 10/8, 0.02)
     for x in range(10000):
-        if x%200 == 0:
-            gia.iteration()
+        if x%1000 == 0:
+            gia.iteration(post_text=True, avg_fitness=True)
         else:
             gia.iteration()
         statistics_per_world.append(gia.species_fitness_statistics())
-        if gia.separator>4900:
+        if gia.separator>2400:
             asexual_success += 1
             break
         if gia.separator<100:
