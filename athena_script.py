@@ -136,7 +136,7 @@ sexual_success = 0
 asexual_success = 0
 for i in range(100):
     print('world iteration: ',i)
-    gia = world(1000, 5, 100, 10, 0.5, 0.8, 10/8, 10/8, 0.02)
+    gia = world(5000, 5, 100, 10, 0.5, 0.8, 10/8, 10/8, 0.02)
     for x in range(10000):
         gia.iteration()
         if gia.separator>900:

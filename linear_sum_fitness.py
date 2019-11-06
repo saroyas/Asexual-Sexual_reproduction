@@ -169,7 +169,7 @@ for i in range(100):
     list_statistics.append(statistics_per_world)
     print('SEX:', sexual_success, 'ASEX:', asexual_success)
     with open("results.txt", "a") as myfile:
-        myfile.write('SEX:'+ int(sexual_success)+ 'ASEX:'+ int(asexual_success))
+        myfile.write('SEX:'+ str(sexual_success)+ 'ASEX:'+ str(asexual_success))
     lengths.append(x)
 
 
