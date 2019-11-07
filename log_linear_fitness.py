@@ -196,7 +196,7 @@ class world():
 # %%
 sexual_success = 0
 asexual_success = 0
-num_iterations = input('How many worlds are to be created:')
+num_iterations = int(input('How many worlds are to be created:'))
 with open("results.txt", "w") as myfile:
     myfile.write('Thread one has begun \n')
 for i in range(num_iterations):
