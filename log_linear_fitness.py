@@ -9,7 +9,7 @@ from mpl_toolkits.mplot3d import Axes3D
 
 # %%
 def fitness_landscape(organism_column):
-    fitness_value_for_organism = np.sum(organism_column)
+    fitness_value_for_organism = np.log(np.sum(organism_column))
     return fitness_value_for_organism
 
 
