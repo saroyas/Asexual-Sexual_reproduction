@@ -211,6 +211,7 @@ sexual_success = 0
 asexual_success = 0
 num_iterations = int(input('How many worlds are to be created:'))
 control = int(input('Input 1 : We run as control, (uniform fitness)'))
+print_frequency = int(input('Print frequency of update information'))
 with open("results.txt", "w") as myfile:
     myfile.write('Thread one has begun \n')
 for i in range(num_iterations):
@@ -219,7 +220,7 @@ for i in range(num_iterations):
     population_size = 5000
     gia = world(population_size, 3, 100, 10, 0.5, 0.8, 10 / 8, 10 / 8, 0.1)
     for x in range(10000):
-        if x % 10 == 0:
+        if x % print_frequency == 0:
             gia.iteration(post_text=True, avg_fitness=True)
             print('INTER ITERATION: SEX:', sexual_success, 'ASEX:', asexual_success)
             #gia.plot_loci_3d(proportions=True)
