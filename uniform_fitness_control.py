@@ -197,13 +197,11 @@ class world():
 sexual_success = 0
 asexual_success = 0
 num_iterations = int(input('How many worlds are to be created:'))
-with open("results.txt", "w") as myfile:
-    myfile.write('Thread one has begun \n')
 for i in range(num_iterations):
     statistics_per_world = []
     print('world iteration: ', i)
-    population_size = 2500
-    gia = world(population_size, 2, 100, 10, 0.5, 0.8, 10 / 8, 10 / 8, 0.1)
+    population_size = 5000
+    gia = world(population_size, 5, 100, 10, 0.5, 0.8, 10 / 8, 10 / 8, 0.05)
     for x in range(10000):
         if x % 500 == 0:
             gia.iteration(post_text=True, avg_fitness=True)
@@ -219,8 +217,6 @@ for i in range(num_iterations):
             sexual_success += 1
             break
     print('SEX:', sexual_success, 'ASEX:', asexual_success)
-    with open("results.txt", "a") as myfile:
-        myfile.write('SEX:' + str(sexual_success) + 'ASEX:' + str(asexual_success) + '\n')
 
 
 #out1 = 'Sex:' + str(sexual_success) + ' Asex:' + str(asexual_success)
