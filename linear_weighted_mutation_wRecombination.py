@@ -9,7 +9,10 @@ from mpl_toolkits.mplot3d import Axes3D
 
 # %%
 def fitness_landscape(organism_column):
-    fitness_value_for_organism = np.sum(organism_column)
+    if control == 1:
+        fitness_value_for_organism = 1
+    else:
+        fitness_value_for_organism = np.sum(organism_column)
     return fitness_value_for_organism
 
 
@@ -37,7 +40,8 @@ class world():
 
     def mutation_stage(self, step=1):
         shape = self.total_pop_mat.shape
-        mutation_matrix = np.random.choice([-step, 0, step], size=shape, p=[self.mutation_prob, 1 - self.mutation_prob - 0.01, 0.01])
+        half_mutation_prob = self.mutation_prob/2
+        mutation_matrix = np.random.choice([-step, 0, step], size=shape, p=[self.mutation_prob, 1 - self.mutation_prob - half_mutation_prob, half_mutation_prob])
         self.total_pop_mat = self.total_pop_mat + mutation_matrix
 
     def calc_fitness_array(self, population=0):
@@ -87,17 +91,9 @@ class world():
         next_gen_size = int(self.population_sizes(sex=True) * self.sex_repl_ratio)
         next_gen_chosen = np.random.choice(current_organism_index, size=next_gen_size, replace=True)
         chosen_orgs = self.sex_pop_mat[:, next_gen_chosen]
-        def scramble(a, axis=-1):
-            """
-            Return an array with the values of `a` independently shuffled along the
-            given axis
-            """
-            b = a.swapaxes(axis, -1)
-            n = a.shape[axis]
-            idx = np.random.choice(n, n, replace=False)
-            b = b[..., idx]
-            return b.swapaxes(axis, -1)
-        self.sex_pop_mat = scramble(chosen_orgs)
+        for i in range(self.loci):
+            np.random.shuffle(chosen_orgs[i])
+        self.sex_pop_mat = chosen_orgs
 
     def sexual_replication(self):
         total_sex_pop = self.population_sizes(sex=True)
@@ -214,15 +210,16 @@ class world():
 sexual_success = 0
 asexual_success = 0
 num_iterations = int(input('How many worlds are to be created:'))
+control = int(input('Input 1 : We run as control, (uniform fitness)'))
 with open("results.txt", "w") as myfile:
     myfile.write('Thread one has begun \n')
 for i in range(num_iterations):
     statistics_per_world = []
     print('world iteration: ', i)
-    population_size = 2500
-    gia = world(population_size, 2, 100, 10, 0.5, 0.8, 10 / 8, 10 / 8, 0.1)
+    population_size = 5000
+    gia = world(population_size, 3, 100, 10, 0.5, 0.8, 10 / 8, 10 / 8, 0.1)
     for x in range(10000):
-        if x % 500 == 0:
+        if x % 10 == 0:
             gia.iteration(post_text=True, avg_fitness=True)
             print('INTER ITERATION: SEX:', sexual_success, 'ASEX:', asexual_success)
             #gia.plot_loci_3d(proportions=True)
