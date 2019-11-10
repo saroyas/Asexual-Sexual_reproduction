@@ -31,8 +31,7 @@ class world():
         self.asex_repl_ratio = asex_repl_ratio
         self.sex_repl_ratio = sex_repl_ratio
         self.total_pop_mat = (np.random.normal(gene_mean, gene_sd, (loci, self.population_size))).astype(int)
-        self.separator = round(
-            self.population_size * proportion_asexual)  # To indicate where the asex ends and sex begins
+        self.separator = round(self.population_size * proportion_asexual)  # To indicate where the asex ends and sex begins
         self.mutation_down_prob = mutation_down_prob
         self.mutation_up_prob = mutation_up_prob
         self.mutation_step = mutation_step
@@ -160,8 +159,9 @@ sex_win = 0
 asex_win = 0
 num_iterations = int(input('How many iterations?: '))
 for a in range(num_iterations):
+    #WEIGHTED MUTATION PROBS
     gia = world(population_size=5000, loci=2, gene_mean=100, gene_sd=10, proportion_asexual=0.5, survival_rate=0.7,
-                asex_repl_ratio=10 / 7, sex_repl_ratio=10 / 7, mutation_down_prob=0.1, mutation_up_prob=0.1,
+                asex_repl_ratio=10 / 7, sex_repl_ratio=10 / 7, mutation_down_prob=0.1, mutation_up_prob=0.05,
                 mutation_step=1)
     for i in range(100000):
         if gia.population_sizes(asex = True)<100:
