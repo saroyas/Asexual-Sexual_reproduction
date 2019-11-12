@@ -46,9 +46,15 @@ def prep_axes(g, xlim, ylim):
     plt.setp(g.ax_marg_x.get_yticklabels(), visible=False)
     plt.setp(g.ax_marg_y.get_xticklabels(), visible=False)
 
+def prep_clear(g):
+    g.ax_joint.clear()
+    g.ax_marg_y.clear()
+    g.ax_marg_y.clear()
+
 
 def animate(i):
-    prep_axes(g, lim, lim)
+    #prep_axes(g, lim, lim)
+    prep_clear(g)
     g.x, g.y = sex_data[i][0],sex_data[i][1]
     g.plot_joint(sns.kdeplot, cmap="Reds")
     g.plot_marginals(sns.kdeplot, color="r", shade=True)
@@ -69,7 +75,7 @@ def animate_scatter(i):
 a = int(input('Frame range start:'))
 b = int(input('Frame range end:'))
 frames=range(a,b)
-ani = matplotlib.animation.FuncAnimation(g.fig, animate_scatter, frames=frames, repeat=True)
+ani = matplotlib.animation.FuncAnimation(g.fig, animate, frames=frames, repeat=True)
 
 plt.show()
 

@@ -9,7 +9,7 @@ import json
 
 print('hello')
 
-
+skew_counter = 0
 # %%
 control = int(input('Enter 1 if this is to be run as control (else 0): '))
 def fitness_landscape(organism_column):
@@ -88,8 +88,10 @@ class world():
         prop_fitness = self.survival_probability()
         # The following step may be a serious computational time issue
         survivor_list = np.random.choice(curr_population_index, self.organism_capacity, replace=False, p=prop_fitness)
+        survivor_list = np.sort(survivor_list)
         self.total_pop_mat = (self.total_pop_mat)[:, survivor_list]
         self.separator = np.size(np.where(survivor_list < self.separator))
+
 
     def asex_replication_stage(self):
         asex_pop_mat = self.asex_pop_matrix()
@@ -146,8 +148,15 @@ class world():
         with open('data.json', 'w') as fp:
             json.dump(self.plot_data_total, fp)
 
-
 # %%
+
+def iteration_plotting(gia):
+    gia.mutation_stage()
+    gia.add_to_plot_data()
+    gia.survival_stage()
+    gia.add_to_plot_data()
+    gia.replication_stage()
+    gia.add_to_plot_data()
 
 def iteration(gia):
     gia.mutation_stage()
@@ -160,20 +169,22 @@ asex_win = 0
 num_iterations = int(input('How many iterations?: '))
 for a in range(num_iterations):
     #WEIGHTED MUTATION PROBS
-    gia = world(population_size=5000, loci=2, gene_mean=100, gene_sd=10, proportion_asexual=0.5, survival_rate=0.7,
+    gia = world(population_size=20000, loci=2, gene_mean=100, gene_sd=10, proportion_asexual=0.5, survival_rate=0.7,
                 asex_repl_ratio=10 / 7, sex_repl_ratio=10 / 7, mutation_down_prob=0.1, mutation_up_prob=0.05,
                 mutation_step=1)
-    for i in range(100000):
+    for i in range(10000):
         if gia.population_sizes(asex = True)<100:
             sex_win+=1
             break
         elif gia.population_sizes(sex = True) < 100:
             asex_win+=1
             break
-        iteration(gia=gia)
-        if i%1000 == 0:
+        if i % 50 == 0:
+            iteration_plotting(gia)
+        else:
+            iteration(gia=gia)
+        if i%500 == 0:
             print('World:', a, 'Iteration:', i)
-            print('Asex population size:', gia.population_sizes(asex=True))
-            print('Inter-iteration update:')
-            print('Sex:', sex_win, ' Asex:', asex_win)
+            print('Asex population percentage:', gia.population_sizes(asex=True)/gia.population_sizes(total=True))
+            print('INTER-ITER: Sex:', sex_win, ' Asex:', asex_win)
     print('Sex:', sex_win, ' Asex:', asex_win)
