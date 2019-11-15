@@ -5,7 +5,6 @@ import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 import json
 
-
 class world():
     def __init__(self, population_size, loci, gene_mean, gene_sd, proportion_asexual,
                  survival_rate, asex_repl_ratio, sex_repl_ratio, mutation_down_prob, mutation_up_prob, mutation_step=1,
@@ -27,6 +26,11 @@ class world():
         self.add_to_plot_data()
         self.loci_var_data = []
         self.control = control
+        if control == 4:
+            self.landscape = self.import_landscape(file_location= 'landscape.npy')
+
+    def import_landscape(self, file_location = 'landscape.npy'):
+        return np.load(file_location)
 
     def set_control(self):
         print('Welcome to simulation, please define the fitness landscape...')
@@ -46,6 +50,18 @@ class world():
             x = organism_column[0]
             y = organism_column[1]
             fitness_value_for_organism = -(x * x) - (y * y) + (200 * x) + (200 * y)
+        elif self.control == 4:
+            try:
+                #OKAY AGAIN WE ARE DEPENDENT ON NUMBER OF LOCI, namely we assume 2
+                x, y = tuple(organism_column)
+                fitness_value_for_organism = self.landscape[x, y]
+                if fitness_value_for_organism != np.sum(organism_column):
+                    print('okay, theres an issue')
+                    print(fitness_value_for_organism, np.sum(organism_column))
+            except:
+                fitness_value_for_organism == 0
+                print('I think something just went out of range:', organism_column)
+
         return fitness_value_for_organism
 
     def asex_pop_matrix(self):
