@@ -1,22 +1,53 @@
 # %%
+from world_class_v2 import *
 
-import random
-import pickle
-import numpy as np
-import matplotlib.pyplot as plt
-from mpl_toolkits.mplot3d import Axes3D
-import json
+gia = world(population_size=2000, loci=2, gene_mean=100, gene_sd=10, proportion_asexual=0.5, survival_rate=0.7,
+            asex_repl_ratio=10 / 7, sex_repl_ratio=10 / 7, mutation_down_prob=0.05, mutation_up_prob=0.05,
+            mutation_step=1, control=3)
+print('max for each loci', np.max(gia.total_pop_mat, axis = 1))
+print('min for each loci:', np.min(gia.total_pop_mat, axis = 1))
+sex_win, asex_win = 0, 0
+for i in range(100000):
+    if gia.population_sizes(asex=True) < 100:
+        sex_win += 1
+        break
+    elif gia.population_sizes(sex=True) < 100:
+        asex_win += 1
+        break
+    gia.survival_stage()
+    gia.replication_stage()
+    gia.add_to_plot_data()
+    if i % 500 == 0:
+        print('Iteration:', i)
+        print('Asex population percentage:', gia.population_sizes(asex=True) / gia.population_sizes(total=True))
+gia.publish_plot_data()
+print('INTER-ITER: Sex:', sex_win, ' Asex:', asex_win)
+print('iterations', i)
+print('max for each loci', np.max(gia.total_pop_mat, axis = 1))
+print('min for each loci:', np.min(gia.total_pop_mat, axis = 1))
 
-print('hello')
 
-skew_counter = 0
-# %%
-control = int(input('Enter 1 if this is to be run as control (else 0): '))
+
+
+'''
+def set_control():
+    print('Welcome to simulation, please define the fitness landscape...')
+    print('0: Control (flat), 1: Linear, 2: Product, 3: Hill at 100')
+    print('4: load up fitness landscape')
+    control = int(input('Using the above key, choose an option: '))
+
 def fitness_landscape(organism_column):
-    if control == 1:
+    if control == 0:
         fitness_value_for_organism = 1
-    elif control == 0:
+    elif control == 1:
         fitness_value_for_organism = np.sum(organism_column)
+    elif control == 2:
+        fitness_value_for_organism = np.product(organism_column)
+    elif control == 3:
+        #CURRENTLY ONLY WORKS FOR 2 LOCI:
+        x = organism_column[0]
+        y = organism_column[1]
+        fitness_value_for_organism = -(x * x) - (y * y) + (200 * x) + (200 * y)
     return fitness_value_for_organism
 
 
@@ -24,7 +55,7 @@ def fitness_landscape(organism_column):
 
 class world():
     def __init__(self, population_size, loci, gene_mean, gene_sd, proportion_asexual,
-                 survival_rate, asex_repl_ratio, sex_repl_ratio, mutation_down_prob, mutation_up_prob, mutation_step=1):
+                 survival_rate, asex_repl_ratio, sex_repl_ratio, mutation_down_prob, mutation_up_prob, mutation_step=1, control=1):
         self.population_size = population_size
         self.loci = loci
         self.organism_capacity = round(survival_rate * population_size)
@@ -41,6 +72,27 @@ class world():
         self.plot_data_total = {}
         self.add_to_plot_data()
         self.loci_var_data = []
+        self.control = control
+
+    def set_control(self):
+        print('Welcome to simulation, please define the fitness landscape...')
+        print('0: Control (flat), 1: Linear, 2: Product, 3: Hill at 100')
+        print('4: load up fitness landscape')
+        self.control = int(input('Using the above key, choose an option: '))
+
+    def fitness_landscape(self, organism_column):
+        if self.control == 0:
+            fitness_value_for_organism = 1
+        elif self.control == 1:
+            fitness_value_for_organism = np.sum(organism_column)
+        elif self.control == 2:
+            fitness_value_for_organism = np.product(organism_column)
+        elif self.control == 3:
+            # CURRENTLY ONLY WORKS FOR 2 LOCI:
+            x = organism_column[0]
+            y = organism_column[1]
+            fitness_value_for_organism = -(x * x) - (y * y) + (200 * x) + (200 * y)
+        return fitness_value_for_organism
 
     def asex_pop_matrix(self):
         asex_matrix = self.total_pop_mat[:, :self.separator]
@@ -73,7 +125,7 @@ class world():
         self.total_pop_mat = self.total_pop_mat + mutation_matrix
 
     def calc_fitness_array(self, population_subset):
-        return np.apply_along_axis(fitness_landscape, 0, population_subset)
+        return np.apply_along_axis(self.fitness_landscape, 0, population_subset)
 
     def survival_probability(self):
         # For now we make survival probability simply proportionate to
@@ -147,31 +199,30 @@ class world():
     def publish_plot_data(self):
         with open('data.json', 'w') as fp:
             json.dump(self.plot_data_total, fp)
+            
+    def iteration(self):
+        self.mutation_stage()
+        self.survival_stage()
+        self.replication_stage()
+
+    def iteration_plotting(self):
+        self.mutation_stage()
+        self.add_to_plot_data()
+        self.survival_stage()
+        self.add_to_plot_data()
+        self.replication_stage()
+        self.add_to_plot_data()
 
 # %%
-
-def iteration_plotting(gia):
-    gia.mutation_stage()
-    gia.add_to_plot_data()
-    gia.survival_stage()
-    gia.add_to_plot_data()
-    gia.replication_stage()
-    gia.add_to_plot_data()
-
-def iteration(gia):
-    gia.mutation_stage()
-    gia.survival_stage()
-    gia.replication_stage()
-
 
 sex_win = 0
 asex_win = 0
 num_iterations = int(input('How many iterations?: '))
 for a in range(num_iterations):
     #WEIGHTED MUTATION PROBS
-    gia = world(population_size=10000, loci=2, gene_mean=100, gene_sd=10, proportion_asexual=0.5, survival_rate=0.7,
+    gia = world(population_size=2000, loci=2, gene_mean=100, gene_sd=10, proportion_asexual=0.5, survival_rate=0.7,
                 asex_repl_ratio=10 / 7, sex_repl_ratio=10 / 7, mutation_down_prob=0.05, mutation_up_prob=0.05,
-                mutation_step=1)
+                mutation_step=1, control = 0)
     for i in range(100000):
         if gia.population_sizes(asex = True)<100:
             sex_win+=1
@@ -179,12 +230,14 @@ for a in range(num_iterations):
         elif gia.population_sizes(sex = True) < 100:
             asex_win+=1
             break
-        if i % 50 == 0:
-            iteration_plotting(gia)
-        else:
-            iteration(gia=gia)
+        gia.iteration()
+        if i > 200 and i % 10 == 0:
+            gia.add_to_plot_data()
         if i%500 == 0:
             print('World:', a, 'Iteration:', i)
             print('Asex population percentage:', gia.population_sizes(asex=True)/gia.population_sizes(total=True))
             print('INTER-ITER: Sex:', sex_win, ' Asex:', asex_win)
     print('Sex:', sex_win, ' Asex:', asex_win)
+gia.publish_plot_data()
+
+'''
