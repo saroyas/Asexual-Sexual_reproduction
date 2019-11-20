@@ -9,7 +9,7 @@ def create_world_and_run_till_end(sex_win, asex_win, land):
 
     print('max for each loci', np.max(gia.total_pop_mat, axis=1))
     print('min for each loci:', np.min(gia.total_pop_mat, axis=1))
-    for i in range(100000):
+    for i in range(15000):
         if gia.population_sizes(asex=True) < 100:
             sex_win += 1
             print('SEX WINNER')
