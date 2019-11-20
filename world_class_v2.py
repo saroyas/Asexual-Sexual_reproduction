@@ -4,11 +4,12 @@ import numpy as np
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 import json
+from gen_landscape import *
 
 class world():
     def __init__(self, population_size, loci, gene_mean, gene_sd, proportion_asexual,
                  survival_rate, asex_repl_ratio, sex_repl_ratio, mutation_down_prob, mutation_up_prob, mutation_step=1,
-                 control=1):
+                 control=1, landscape = []):
         self.population_size = population_size
         self.loci = loci
         self.organism_capacity = round(survival_rate * population_size)
@@ -27,7 +28,7 @@ class world():
         self.loci_var_data = []
         self.control = control
         if control == 4:
-            self.landscape = self.import_landscape(file_location= 'landscape.npy')
+            self.landscape = landscape
 
     def import_landscape(self, file_location = 'landscape.npy'):
         return np.load(file_location)
@@ -55,9 +56,6 @@ class world():
                 #OKAY AGAIN WE ARE DEPENDENT ON NUMBER OF LOCI, namely we assume 2
                 x, y = tuple(organism_column)
                 fitness_value_for_organism = self.landscape[x, y]
-                if fitness_value_for_organism != np.sum(organism_column):
-                    print('okay, theres an issue')
-                    print(fitness_value_for_organism, np.sum(organism_column))
             except:
                 fitness_value_for_organism == 0
                 print('I think something just went out of range:', organism_column)
