@@ -30,9 +30,10 @@ def create_world_and_run_till_end(sex_win, asex_win, land):
 sex_win, asex_win = 0, 0
 land_num = 0
 land_dict = {}
-for n in range(100):
+grid_res = int(input('what is the grid resolution of landscape'))
+for n in range(10000):
     try:
-        land = Landscape(2, 300, num_grid_res=2)
+        land = Landscape(2, 300, num_grid_res=grid_res)
         sex_win, asex_win = create_world_and_run_till_end(sex_win, asex_win, land)
     except:
         print('WENT OUT OF RANGE')
