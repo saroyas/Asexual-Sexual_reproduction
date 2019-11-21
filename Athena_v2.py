@@ -35,7 +35,7 @@ land_num = 0
 land_dict = {}
 grid_res = int(input('what is the grid resolution of landscape'))
 
-diffs = [-45, -30, -15, 0, 15, 30, 45]
+diffs = [15, 30, 45]
 for half_diff in diffs:
     sex_win, asex_win = 0, 0
     for n in range(100):
