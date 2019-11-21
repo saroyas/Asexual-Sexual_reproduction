@@ -45,7 +45,9 @@ for half_diff in diffs:
             sex_win, asex_win = create_world_and_run_till_end(sex_win, asex_win, land)
         except:
             print('WENT OUT OF RANGE')
+        print('half diff:', half_diff)
         print('INTER-ITER: Sex:', sex_win, ' Asex:', asex_win)
+        print('land_dict',land_dict)
     land_dict[half_diff] = (sex_win, asex_win)
 
 print('WE ARE FINISHED')
