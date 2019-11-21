@@ -11,11 +11,12 @@ import mpl_toolkits.mplot3d.axes3d as p3
 
 # %%
 class Landscape():
-    def __init__(self, num_dimensions, dimension_size, num_grid_res=7):
+    def __init__(self, num_dimensions, dimension_size, num_grid_res=7, assigned_fitness=[]):
         self.num_dims = num_dimensions
         self.dim_size = dimension_size
         self.num_grid_res = num_grid_res
         self.chosen_points = self.gen_chosen_points()
+        self.assigned_fitness = assigned_fitness
         self.fitness_grid = self.gen_landscape()
 
     def gen_chosen_points(self):
@@ -29,13 +30,14 @@ class Landscape():
         return rand_fitness_array
 
     def gen_landscape(self):
-        rand_fitness_array = self.uniform_rand_fit_assign()
+        if self.assigned_fitness == []:
+            self.assigned_fitness = self.uniform_rand_fit_assign()
         grid_x, grid_y = np.mgrid[0:self.dim_size, 0:self.dim_size]
-        return griddata(self.chosen_points, rand_fitness_array, (grid_x, grid_y), method='cubic')
+        return griddata(self.chosen_points, self.assigned_fitness, (grid_x, grid_y), method='cubic')
 
-    def draw_2d_in_3d(self, elevation_deg=80, rotation_deg=0):
+    def draw_2d_in_3d(self, elevation_deg=80, rotation_deg=90):
         grid_x, grid_y = np.mgrid[0:self.dim_size, 0:self.dim_size]
-        fig = p.figure()
+        fig = p.figure(figsize=(20,20))
         ax = p3.Axes3D(fig)
         # ax.plot_wireframe(grid_x,grid_y,self.fitness_grid, color = 'black')
         ax.contour3D(grid_x, grid_y, self.fitness_grid, 50, cmap=plt.cm.viridis)
