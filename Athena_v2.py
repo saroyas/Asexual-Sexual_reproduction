@@ -56,7 +56,7 @@ def gen_assigned_values(range = range_tens):
 land_num = 0
 data_dict = {}
 grid_res = 3
-for n in range(2):
+for n in range(300):
     land = Landscape(num_dimensions=2, dimension_size=300, num_grid_res=grid_res, assigned_fitness = gen_assigned_values())
     print(land.assigned_fitness)
     who_won = create_world_and_run_till_end(land)
