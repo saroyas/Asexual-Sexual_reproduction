@@ -51,7 +51,6 @@ def prep_clear(g):
     g.ax_marg_y.clear()
     g.ax_marg_x.clear()
 
-
 def animate(i):
     #prep_axes(g, lim, lim)
     prep_axes(g, lim, lim)

@@ -1,55 +1,75 @@
-
+#%%
 from gen_landscape import *
 from world_class_v2 import *
-
-def create_world_and_run_till_end(sex_win, asex_win, land):
+import datetime
+import json
+#%%
+def create_world_and_run_till_end(land):
     gia = world(population_size=10000, loci=2, gene_mean=150, gene_sd=10, proportion_asexual=0.5, survival_rate=0.7,
                 asex_repl_ratio=10 / 7, sex_repl_ratio=10 / 7, mutation_down_prob=0.05, mutation_up_prob=0.05,
                 mutation_step=1, control=4, landscape=land.fitness_grid)
-    for i in range(15000):
+    i = 0
+    for i in range(11000):
         if gia.population_sizes(asex=True) < 100:
-            sex_win += 1
+            who_won = 2
             print('SEX WINNER')
             break
         elif gia.population_sizes(sex=True) < 100:
-            asex_win += 1
+            who_won = 1
             print('ASEX WINNER')
+            break
+        elif i>10000:
+            who_won = 0
+            print('DRAW')
             break
         gia.mutation_stage()
         gia.survival_stage()
         gia.replication_stage()
         if i % 500 == 0:
-            print('Iteration:', i)
-            print('inter world status: asex wins:', asex_win, 'sex win', sex_win)
-            print('Asex population percentage:', gia.population_sizes(asex=True) / gia.population_sizes(total=True))
-    return sex_win, asex_win
+            print('     Inside iteration:', i)
+            print('     Asex population percentage:', gia.population_sizes(asex=True) / gia.population_sizes(total=True))
+            print('     ===================================')
+    return who_won
 
-def gen_fitness_dots(half_diff = 45):
-    corner = 50 - half_diff
-    middle = 50 + half_diff
-    fitness_dots = [corner] * 4 + [middle] + [corner] * 4
-    return fitness_dots
-
-sex_win, asex_win = 0, 0
+#%%
+def calc_win_stats(data_dict):
+    sex, asex, draws = 0, 0, 0
+    for key in data_dict.keys():
+        (land.chosen_points, who_won) = data_dict[key]
+        if who_won==1:
+            asex +=1
+        elif who_won == 2:
+            sex +=1
+        elif who_won == 0:
+            draws += 1
+    print('Current Overall Statistics:')
+    print('Sex wins:', sex, ' Asex wins:', asex, ' Draws:', draws)
+#%%
+range_tens = range(0,101, 10)
+def gen_assigned_values(range = range_tens):
+    fst_part = np.random.choice(range_tens, 4).tolist()
+    centre_of_space = 50
+    snd_part = np.random.choice(range_tens, 4).tolist()
+    assigned_values = np.asarray(fst_part+[centre_of_space]+snd_part)
+    return assigned_values
+#%%
 land_num = 0
-land_dict = {}
-grid_res = int(input('what is the grid resolution of landscape'))
-
-diffs = [15, 30, 45]
-for half_diff in diffs:
-    sex_win, asex_win = 0, 0
-    for n in range(100):
-        try:
-            fitness_dots = gen_fitness_dots(half_diff = half_diff)
-            land = Landscape(num_dimensions=2, dimension_size=300, num_grid_res=3, assigned_fitness=fitness_dots)
-            sex_win, asex_win = create_world_and_run_till_end(sex_win, asex_win, land)
-        except:
-            print('WENT OUT OF RANGE')
-        print('half diff:', half_diff)
-        print('INTER-ITER: Sex:', sex_win, ' Asex:', asex_win)
-        print('land_dict',land_dict)
-    land_dict[half_diff] = (sex_win, asex_win)
+data_dict = {}
+grid_res = 3
+for n in range(2):
+    land = Landscape(num_dimensions=2, dimension_size=300, num_grid_res=grid_res, assigned_fitness = gen_assigned_values())
+    print(land.assigned_fitness)
+    who_won = create_world_and_run_till_end(land)
+    assigned_fitness = land.assigned_fitness.tolist()
+    data_dict[n] = (assigned_fitness, who_won)
+    print('Just finished world number', n)
+    calc_win_stats(data_dict)
 
 print('WE ARE FINISHED')
-for half_diff in diffs:
-    print('Half Diff', half_diff, '; Sex Win, Asex Win', land_dict[half_diff])
+print('data dict')
+print(data_dict)
+
+stamp = str(datetime.datetime.now())
+filename = 'Experiment_Data\\two_sim_7_deg_'+stamp+'.json'
+with open(filename, 'w') as fp:
+    json.dump(data_dict, fp)

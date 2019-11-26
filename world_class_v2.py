@@ -54,10 +54,9 @@ class world():
         elif self.control == 4:
             try:
                 #OKAY AGAIN WE ARE DEPENDENT ON NUMBER OF LOCI, namely we assume 2
-                x, y = tuple(organism_column)
-                fitness_value_for_organism = self.landscape[x, y]
+                fitness_value_for_organism = self.landscape[tuple(organism_column)]
             except:
-                fitness_value_for_organism == 0
+                fitness_value_for_organism = 0
                 print('I think something just went out of range:', organism_column)
 
         return fitness_value_for_organism

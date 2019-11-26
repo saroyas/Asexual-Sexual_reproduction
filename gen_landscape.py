@@ -21,10 +21,15 @@ class Landscape():
 
     def gen_chosen_points(self):
         k = complex(0, self.num_grid_res)
-        grid_x, grid_y = np.mgrid[0:self.dim_size:k, 0:self.dim_size:k]
-        return np.vstack((grid_x.ravel(), grid_y.ravel())).T
+        if self.num_dims==2:
+            grid_x, grid_y = np.mgrid[0:self.dim_size:k, 0:self.dim_size:k]
+            chosen_points_temp = np.vstack((grid_x.ravel(), grid_y.ravel())).T
+        else:
+            print('We have not designed the code to work with the given number of dimensions')
+        return chosen_points_temp
 
-    def uniform_rand_fit_assign(self, min=1, max=100):
+
+    def uniform_rand_fit_assign(self, min=100, max=200):
         num_rand_points = self.chosen_points.shape[0]
         rand_fitness_array = np.random.random_integers(min, max, num_rand_points)
         return rand_fitness_array
@@ -32,12 +37,16 @@ class Landscape():
     def gen_landscape(self):
         if self.assigned_fitness == []:
             self.assigned_fitness = self.uniform_rand_fit_assign()
-        grid_x, grid_y = np.mgrid[0:self.dim_size, 0:self.dim_size]
-        return griddata(self.chosen_points, self.assigned_fitness, (grid_x, grid_y), method='cubic')
+        if self.num_dims == 2:
+            grid_x, grid_y = np.mgrid[0:self.dim_size, 0:self.dim_size]
+            landscape = griddata(self.chosen_points, self.assigned_fitness, (grid_x, grid_y), method='cubic')
+        else:
+            print('not correct number of dimensions')
+        return landscape
 
-    def draw_2d_in_3d(self, elevation_deg=80, rotation_deg=90):
+    def draw_2d_in_3d(self, elevation_deg=80, rotation_deg=90*3):
         grid_x, grid_y = np.mgrid[0:self.dim_size, 0:self.dim_size]
-        fig = p.figure(figsize=(20,20))
+        fig = p.figure()
         ax = p3.Axes3D(fig)
         # ax.plot_wireframe(grid_x,grid_y,self.fitness_grid, color = 'black')
         ax.contour3D(grid_x, grid_y, self.fitness_grid, 50, cmap=plt.cm.viridis)
@@ -52,11 +61,4 @@ class Landscape():
         plt.imshow(self.fitness_grid.T, extent=(0, self.dim_size, 0, self.dim_size), origin='lower')
         plt.title('Cubic')
         plt.gcf().set_size_inches(10, 10)
-        plt.show()
-
-    def draw_2d_sea(self):
-        grid_x, grid_y = range(self.dim_size), range(self.dim_size)
-        fig = plt.figure()
-        ax = fig.gca(projection='3d')
-        ax.plot_trisurf(grid_x, grid_y, self.fitness_grid, cmap=plt.cm.viridis, linewidth=0.2)
         plt.show()
