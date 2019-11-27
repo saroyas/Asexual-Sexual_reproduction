@@ -29,7 +29,7 @@ class Landscape():
             print('We have not designed the code to work with the given number of dimensions')
         '''
         #BE AWARE, THIS JUST CREATES A DIAMOND AROUND THE POINT
-        chosen_points_temp = [[0, 150], [150, 0], [150, 150], [150, 300], [300, 150]]
+        chosen_points_temp = [[0, 200], [200, 0], [200, 200], [200, 400], [400, 200]]
         return chosen_points_temp
 
 
