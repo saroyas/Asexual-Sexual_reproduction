@@ -21,11 +21,15 @@ class Landscape():
 
     def gen_chosen_points(self):
         k = complex(0, self.num_grid_res)
+        '''
         if self.num_dims==2:
             grid_x, grid_y = np.mgrid[0:self.dim_size:k, 0:self.dim_size:k]
             chosen_points_temp = np.vstack((grid_x.ravel(), grid_y.ravel())).T
         else:
             print('We have not designed the code to work with the given number of dimensions')
+        '''
+        #BE AWARE, THIS JUST CREATES A DIAMOND AROUND THE POINT
+        chosen_points_temp = [[0, 150], [150, 0], [150, 150], [150, 300], [300, 150]]
         return chosen_points_temp
 
 
@@ -39,17 +43,21 @@ class Landscape():
             self.assigned_fitness = self.uniform_rand_fit_assign()
         if self.num_dims == 2:
             grid_x, grid_y = np.mgrid[0:self.dim_size, 0:self.dim_size]
+            print(self.chosen_points)
+            print(self.assigned_fitness)
             landscape = griddata(self.chosen_points, self.assigned_fitness, (grid_x, grid_y), method='cubic')
         else:
             print('not correct number of dimensions')
         return landscape
 
-    def draw_2d_in_3d(self, elevation_deg=80, rotation_deg=90*3):
+    def draw_2d_in_3d(self, elevation_deg=80, rotation_deg=90*3, mesh = False):
         grid_x, grid_y = np.mgrid[0:self.dim_size, 0:self.dim_size]
         fig = p.figure()
         ax = p3.Axes3D(fig)
-        # ax.plot_wireframe(grid_x,grid_y,self.fitness_grid, color = 'black')
-        ax.contour3D(grid_x, grid_y, self.fitness_grid, 50, cmap=plt.cm.viridis)
+        if mesh == True:
+            ax.plot_wireframe(grid_x,grid_y,self.fitness_grid, color = 'black')
+        else:
+            ax.contour3D(grid_x, grid_y, self.fitness_grid, 50, cmap=plt.cm.viridis)
         ax.set_xlabel('loci_0')
         ax.set_ylabel('loci_1')
         ax.set_zlabel('Fitness')

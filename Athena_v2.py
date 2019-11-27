@@ -3,6 +3,7 @@ from gen_landscape import *
 from world_class_v2 import *
 import datetime
 import json
+import numpy as np
 #%%
 def create_world_and_run_till_end(land):
     gia = world(population_size=10000, loci=2, gene_mean=150, gene_sd=10, proportion_asexual=0.5, survival_rate=0.7,
@@ -25,45 +26,67 @@ def create_world_and_run_till_end(land):
         gia.mutation_stage()
         gia.survival_stage()
         gia.replication_stage()
-        if i % 500 == 0:
-            print('     Inside iteration:', i)
-            print('     Asex population percentage:', gia.population_sizes(asex=True) / gia.population_sizes(total=True))
-            print('     ===================================')
     return who_won
 
 #%%
-def calc_win_stats(data_dict):
-    sex, asex, draws = 0, 0, 0
-    for key in data_dict.keys():
-        (land.chosen_points, who_won) = data_dict[key]
-        if who_won==1:
-            asex +=1
-        elif who_won == 2:
-            sex +=1
-        elif who_won == 0:
-            draws += 1
-    print('Current Overall Statistics:')
-    print('Sex wins:', sex, ' Asex wins:', asex, ' Draws:', draws)
+def isCircular(arr1, arr2):
+    if len(arr1) != len(arr2):
+        return False
+
+    str1 = ' '.join(map(str, arr1))
+    str2 = ' '.join(map(str, arr2))
+    if len(str1) != len(str2):
+        return False
+
+    return str1 in str2 + ' ' + str2
 #%%
-range_tens = range(0,101, 10)
-def gen_assigned_values(range = range_tens):
-    fst_part = np.random.choice(range_tens, 4).tolist()
-    centre_of_space = 50
-    snd_part = np.random.choice(range_tens, 4).tolist()
-    assigned_values = np.asarray(fst_part+[centre_of_space]+snd_part)
-    return assigned_values
+range_possible = [1,50,100]
+import itertools
+all_possible = list(itertools.product(range_possible,range_possible, range_possible, range_possible))
+final_arrangements = []
+for arrangement in all_possible:
+    no_cyclic_quivalent = True
+    for arr in final_arrangements:
+        if isCircular(arrangement, arr) == True:
+            no_cyclic_quivalent = False
+    if no_cyclic_quivalent == True:
+        final_arrangements.append(arrangement)
+
 #%%
-land_num = 0
+def run_assesment_of_landscape(assigned_fitness, num_times=1):
+    sex_wins, asex_wins, draws, errors = 0,0,0,0
+    assigned_fitness = np.array(assigned_fitness)
+    for n in range(num_times):
+        #try:
+        land = Landscape(num_dimensions=2, dimension_size=300, num_grid_res=3, assigned_fitness = assigned_fitness)
+        who_won = create_world_and_run_till_end(land)
+        if who_won==0:
+            draws+=1
+        elif who_won==1:
+            asex_wins+=1
+        elif who_won==2:
+            sex_wins+=1
+        print('     Arrangement Stats: Sex, Asex, Draws')
+        print('     ',arrangement, sex_wins, asex_wins, draws)
+        #except:
+        #    errors += 1
+    return (sex_wins, asex_wins, draws, errors)
+#%%
 data_dict = {}
-grid_res = 3
-for n in range(300):
-    land = Landscape(num_dimensions=2, dimension_size=300, num_grid_res=grid_res, assigned_fitness = gen_assigned_values())
-    print(land.assigned_fitness)
-    who_won = create_world_and_run_till_end(land)
-    assigned_fitness = land.assigned_fitness.tolist()
-    data_dict[n] = (assigned_fitness, who_won)
-    print('Just finished world number', n)
-    calc_win_stats(data_dict)
+counter = 0
+for arrangement in final_arrangements:
+    arrangement1 = list(arrangement)
+    arrangement1 = arrangement1[:2]+[50]+arrangement1[2:]
+    sex_wins, asex_wins, draws, errors = run_assesment_of_landscape(assigned_fitness=arrangement1, num_times=20)
+    data_dict[counter] = (arrangement1, sex_wins, asex_wins, draws, errors)
+    counter +=1
+    print('Just finished the stuff for arrangement', arrangement1)
+    print('SEX/ASEX/DRAWS/ERRORS:',sex_wins, asex_wins, draws, errors)
+    print('===============')
+    print('Current Summary')
+    print(data_dict)
+
+#%%
 
 print('WE ARE FINISHED')
 print('data dict')
