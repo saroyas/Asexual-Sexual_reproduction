@@ -26,9 +26,7 @@ class world():
         self.plot_data_total = {}
         self.add_to_plot_data()
         self.loci_var_data = []
-        self.control = control
-        if control == 4:
-            self.landscape = landscape
+        self.landscape = landscape
 
     def import_landscape(self, file_location = 'landscape.npy'):
         return np.load(file_location)

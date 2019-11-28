@@ -2,8 +2,6 @@
 import scipy as sp
 import scipy.interpolate
 import matplotlib.animation
-
-# set seed to reproducible
 import matplotlib.pyplot as plt
 import matplotlib.animation
 import numpy as np
