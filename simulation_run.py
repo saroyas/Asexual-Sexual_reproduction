@@ -7,7 +7,7 @@ import datetime
 
 # %%
 def create_world_and_run_till_end(land, max_iterations=10000):
-    gia = Population(population_size=10000, loci=2, gene_mean=0, gene_sd=1,
+    gia = Population(population_size=20000, loci=2, gene_mean=0, gene_sd=1,
                      proportion_asexual=0.5, survival_rate=0.7, mutation_std=1, landscape=land)
 
     for i in range(max_iterations + 10):
@@ -66,16 +66,17 @@ sqr_dist = np.sqrt(mn_dist**2/2)
 points_to_set_sqr = np.array([[sqr_dist, sqr_dist], [-sqr_dist, sqr_dist],
                               [-sqr_dist, -sqr_dist], [sqr_dist, -sqr_dist], [0, 0]])
 # pure concave
-assigned_concave_1 = [-mn_dist, -mn_dist, -mn_dist, -mn_dist, 0]
-# saddle
+assigned_concave = [-mn_dist, -mn_dist, -mn_dist, -mn_dist, 0]
 assigned_half_saddle = [-mn_dist, mn_dist, -mn_dist, -mn_dist, 0]
 assigned_saddle = [-mn_dist, mn_dist, -mn_dist, mn_dist, 0]
+assigned_half_convex = [-mn_dist, mn_dist, mn_dist, mn_dist, 0]
+assigned_convex = [mn_dist, mn_dist, mn_dist, mn_dist, 0]
 
-list_of_assigned_fitness = [assigned_concave_1, assigned_half_saddle, assigned_saddle]
+list_of_assigned_fitness = [assigned_concave, assigned_half_saddle, assigned_saddle, assigned_half_convex, assigned_convex]
 
 
 data_dict_sqr = test_arrangements(points_to_set=points_to_set_sqr,
-                              list_of_assigned_fitness=list_of_assigned_fitness, num_times_each=100)
+                                  list_of_assigned_fitness=list_of_assigned_fitness, num_times_each=100)
 
 # %%
 print('WE ARE FINISHED WITH SQUARE')
