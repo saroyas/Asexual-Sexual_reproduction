@@ -60,25 +60,47 @@ def test_arrangements(points_to_set, list_of_assigned_fitness, num_times_each):
 
 
 # %%
-points_to_set = np.array([[100, 0], [0, 100], [-100, 0], [0, -100], [0, 0]])
+mn_dist = 200
+points_to_set_diamond = np.array([[mn_dist, 0], [0, mn_dist], [-mn_dist, 0], [0, -mn_dist], [0, 0]])
+sqr_dist = np.sqrt(mn_dist**2/2)
+points_to_set_sqr = np.array([[sqr_dist, sqr_dist], [-sqr_dist, sqr_dist],
+                              [-sqr_dist, -sqr_dist], [sqr_dist, -sqr_dist], [0, 0]])
 # pure concave
-assigned_concave_1 = [-100, -100, -100, -100, 0]
+assigned_concave_1 = [-mn_dist, -mn_dist, -mn_dist, -mn_dist, 0]
 # saddle
-assigned_half_saddle = [-100, 100, -100, -100, 0]
-assigned_saddle = [-100, 100, -100, 100, 0]
+assigned_half_saddle = [-mn_dist, mn_dist, -mn_dist, -mn_dist, 0]
+assigned_saddle = [-mn_dist, mn_dist, -mn_dist, mn_dist, 0]
 
 list_of_assigned_fitness = [assigned_concave_1, assigned_half_saddle, assigned_saddle]
-# %%
 
-data_dict = test_arrangements(points_to_set=points_to_set,
+
+data_dict_sqr = test_arrangements(points_to_set=points_to_set_sqr,
                               list_of_assigned_fitness=list_of_assigned_fitness, num_times_each=100)
 
 # %%
-print('WE ARE FINISHED')
+print('WE ARE FINISHED WITH SQUARE')
 print('data dict')
-print(data_dict)
+print(data_dict_sqr)
 
 stamp = str(datetime.datetime.now())
-filename = 'Experiment_Data\\two_sim_7_deg_' + stamp + '.json'
+filename = 'Data_dict_sqr_' + stamp + '.json'
 with open(filename, 'w') as fp:
-    json.dump(data_dict, fp)
+    json.dump(data_dict_sqr, fp)
+
+data_dict_dmd = test_arrangements(points_to_set=points_to_set_diamond,
+                              list_of_assigned_fitness=list_of_assigned_fitness, num_times_each=100)
+
+# %%
+print('WE ARE FINISHED WITH Diam')
+print('data dict')
+print(data_dict_dmd)
+
+stamp = str(datetime.datetime.now())
+filename = 'Data_dict_dmd_' + stamp + '.json'
+with open(filename, 'w') as fp:
+    json.dump(data_dict_dmd, fp)
+
+print('Square:')
+print(data_dict_sqr)
+print('Diamond')
+print(data_dict_dmd)

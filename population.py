@@ -17,8 +17,13 @@ class Population():
         self.loci = loci
         self.organism_capacity = round(survival_rate * population_size)
         self.total_pop_mat = np.around(np.random.normal(gene_mean, gene_sd, (loci, self.population_size)), decimals=0)
-        self.separator = round(
-            self.population_size * proportion_asexual)  # To indicate where the asex ends and sex begins
+        self.separator = round(self.population_size * proportion_asexual)  # To indicate where the asex ends and sex begins
+        '''
+        tester code, start them in diff location
+        asex_pop_init = np.around(np.random.normal(100, gene_sd, (loci, self.separator)), decimals=0)
+        sex_pop_init = np.around(np.random.normal(gene_mean, gene_sd, (loci, population_size - self.separator)), decimals=0)
+        self.total_pop_mat = np.concatenate([asex_pop_init, sex_pop_init], axis=1)
+        '''
         self.mutation_std = mutation_std  # we assume mutation mean is 0
         self.landscape = landscape
         self.repl_ratio = 1 / survival_rate
@@ -141,7 +146,7 @@ class Camera():
     def take_shot(self, population):
         self.update_frame_size(population)
 
-        shot = (population.sex_pop_matrix(), population.asex_pop_matrix())
+        shot = (population.sex_pop_matrix().tolist(), population.asex_pop_matrix().tolist())
         self.camera_roll[self.shot_num] = shot
         self.shot_num += 1
 
