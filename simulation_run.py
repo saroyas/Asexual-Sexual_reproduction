@@ -66,13 +66,18 @@ sqr_dist = np.sqrt(mn_dist**2/2)
 points_to_set_sqr = np.array([[sqr_dist, sqr_dist], [-sqr_dist, sqr_dist],
                               [-sqr_dist, -sqr_dist], [sqr_dist, -sqr_dist], [0, 0]])
 # pure concave
-assigned_concave = [-mn_dist, -mn_dist, -mn_dist, -mn_dist, 0]
+assigned_flat = [0, 0, 0, 0, 0]
+assigned_mostly_flat_1 = [-mn_dist, 0,0,0,0]
+assigned_mostly_flat_2 = [-mn_dist, 0,-mn_dist,0,0]
+assisgned_1_concave = [-20, -20, -20, -20, 0]
+assisgned_2_concave = [-120, -120, -120, -120, -120]
+
 assigned_half_saddle = [-mn_dist, mn_dist, -mn_dist, -mn_dist, 0]
 assigned_saddle = [-mn_dist, mn_dist, -mn_dist, mn_dist, 0]
 assigned_half_convex = [-mn_dist, mn_dist, mn_dist, mn_dist, 0]
 assigned_convex = [mn_dist, mn_dist, mn_dist, mn_dist, 0]
 
-list_of_assigned_fitness = [assigned_concave, assigned_half_saddle, assigned_saddle, assigned_half_convex, assigned_convex]
+list_of_assigned_fitness = [assigned_mostly_flat_1, assigned_mostly_flat_2, assisgned_1_concave, assisgned_2_concave, assigned_flat]
 
 
 data_dict_sqr = test_arrangements(points_to_set=points_to_set_sqr,

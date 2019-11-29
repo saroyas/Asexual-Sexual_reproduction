@@ -52,7 +52,8 @@ def prep_clear(g):
     g.ax_marg_x.clear()
 
 def animate(i):
-    prep_axes(g, lim, lim)
+    #prep_axes(g, lim, lim)
+    prep_clear(g)
     g.x, g.y = sex_data[i][0],sex_data[i][1]
     g.plot_joint(sns.kdeplot, cmap="Reds")
     g.plot_marginals(sns.kdeplot, color="r", shade=True)
