@@ -18,12 +18,6 @@ class Population():
         self.organism_capacity = round(survival_rate * population_size)
         self.total_pop_mat = np.around(np.random.normal(gene_mean, gene_sd, (loci, self.population_size)), decimals=0)
         self.separator = round(self.population_size * proportion_asexual)  # To indicate where the asex ends and sex begins
-        '''
-        tester code, start them in diff location
-        asex_pop_init = np.around(np.random.normal(100, gene_sd, (loci, self.separator)), decimals=0)
-        sex_pop_init = np.around(np.random.normal(gene_mean, gene_sd, (loci, population_size - self.separator)), decimals=0)
-        self.total_pop_mat = np.concatenate([asex_pop_init, sex_pop_init], axis=1)
-        '''
         self.mutation_std = mutation_std  # we assume mutation mean is 0
         self.landscape = landscape
         self.repl_ratio = 1 / survival_rate
@@ -54,25 +48,43 @@ class Population():
         seperate_loci = [organisms[locus, :] for locus in range(self.loci)]
         # THIS IS DIMENSION DEPENDENT!
         if self.loci == 2:
-            indep_fitness = np.array(self.landscape.get_points(seperate_loci[0], seperate_loci[1]))
-            # We normalize, to allow for proportional survival thats independent of how high in the
-            # clouds you are - higher means selection weaker
-            base_fitness = np.min(indep_fitness) - 1  # the minus one is to make the future base 1, not 0
-            dep_fitness = np.subtract(indep_fitness, base_fitness)
-            return (dep_fitness)
+            fitness_arr = np.array(self.landscape.get_points(seperate_loci[0], seperate_loci[1]))
+            return fitness_arr
         else:
             print('Loci dimension not considered')
+
+    def fitness_stats(self):
+        #The varience in currently calculated over loci
+        #we want varience across diagonals also
+        asex_fitness_arr = self.get_fitness(self.asex_pop_matrix())
+        asex_fitness_arr = asex_fitness_arr[np.logical_not(np.isnan(asex_fitness_arr))]
+        asex_avg = np.average(asex_fitness_arr)
+        asex_var = np.var(asex_fitness_arr)
+
+        sex_fitness_arr = self.get_fitness(self.sex_pop_matrix())
+        sex_fitness_arr = sex_fitness_arr[np.logical_not(np.isnan(sex_fitness_arr))]
+        sex_avg = np.average(sex_fitness_arr)
+        sex_var = np.var(sex_fitness_arr)
+
+        #_var = [varience in loci 0, var in loci 1]
+        return ((asex_avg, asex_var), (sex_avg, sex_var))
+
 
     def survival_stage(self):
         # OKAY, fragile section, simulation especially vulnerable to definitions here
         # for this to work, the fitness landscape might need to be changed.
         curr_population_index = range(self.population_sizes(total=True))
 
-        total_fitness_array = self.get_fitness(self.total_pop_mat)
-        total_fitness = np.sum(total_fitness_array)
-        prop_fitness = np.divide(total_fitness_array, total_fitness)
+        total_pop_fitness_array = self.get_fitness(self.total_pop_mat)
+        # We normalize, to allow for proportional survival that's independent of how high in the
+        # clouds you are - higher means selection weaker
+        base_fitness = np.min(total_pop_fitness_array) - 1  # the minus one is to make the future base 1, not 0
+        pop_fitness_array_normed = np.subtract(total_pop_fitness_array, base_fitness)
 
-        survivor_list = np.random.choice(curr_population_index, self.organism_capacity, replace=False, p=prop_fitness)
+        total_fitness = np.sum(pop_fitness_array_normed)
+        proportional_fitness = np.divide(pop_fitness_array_normed, total_fitness)
+
+        survivor_list = np.random.choice(curr_population_index, self.organism_capacity, replace=False, p=proportional_fitness)
         survivor_list = np.sort(survivor_list)
 
         self.total_pop_mat = (self.total_pop_mat)[:, survivor_list]
@@ -83,7 +95,11 @@ class Population():
         def pure_replication(organisms):
             num_organisms = organisms.shape[1]
             population_index = np.arange(0, num_organisms)
-            next_gen_size = round(num_organisms * self.repl_ratio)
+
+            #OKAY, MAJOR ALTERATION, WE NOW PRESERVE SEX/ASEX POP SIZES AT HALF
+            #THIS SHIFTS FOCUS FROM SURVIVAL TO AVERAGE FITNESS
+            next_gen_size = round(self.population_size * 0.5)
+            #next_gen_size = round(num_organisms * self.repl_ratio)
 
             next_gen_chosen = np.random.choice(population_index, size=next_gen_size, replace=True)
             next_gen = organisms[:, next_gen_chosen]
