@@ -57,7 +57,7 @@ def test_arrangements(points_to_set, list_of_assigned_fitness, num_times_each):
 
 
 # %%
-mn = 1000
+mn = 500
 points_to_set_diamond = np.array([[mn, 0], [0, mn], [-mn, 0], [0, -mn], [0, 0]])
 points_to_set_sqr = np.array([[mn, mn], [-mn, mn], [-mn, -mn], [mn, -mn], [0, 0]])
 # pure concave
