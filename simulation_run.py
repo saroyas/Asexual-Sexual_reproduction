@@ -88,9 +88,8 @@ convex_almost_1 = [sz, sz, sz, 0, 0]
 pure_convex = [sz, sz, sz, sz, 0]
 
 list_of_assigned_fitness_done = [convex_almost_4, convex_almost_3, convex_almost_2, convex_almost_1, pure_convex,
-                            flat]
-list_of_assigned_fitness = [hill_slope, saddle_almost_1, saddle_almost_2, assigned_saddle,
-                            pure_concave, concave_almost_1, concave_almost_2, concave_almost_3, concave_almost_4]
+                                 flat, hill_slope, saddle_almost_1, saddle_almost_2, assigned_saddle]
+list_of_assigned_fitness = [concave_almost_4, concave_almost_3, concave_almost_2, concave_almost_1, pure_concave]
 
 #%%
 which_orientation = int(input('Diamond: 0, Square: 1 ::'))
