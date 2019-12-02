@@ -13,6 +13,10 @@ directions, enabling it to move faster into such directions. This enables the se
 these 'diagonal' directions confers an advantage. Not only that, but the sexual recombination process also confers
 no disadvantage when moving in 'not diagonally'.
 
+You can expect a full formal analysis up here by June 2020.
+
+Background note:
+
 Sexual replication has many seeming issues in comparison to asexual replication. From the nineteenth century, it has 
 been recognized that, since there is no obvious advantage to the individuals involved, the advantages of sexual reproduction 
 must be evolutionary. Furthermore, the advantage must be substantial; for example, producing males entails a two-fold cost, 
