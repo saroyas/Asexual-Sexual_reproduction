@@ -10,8 +10,8 @@ Sex vs Asex: the role of varience conversion (https://lewispye.files.wordpress.c
 the papers results may be generalisable to many different fitness landscapes (comapred to just the linear or product cases
 considered in the paper). Namely, sexual recombination increases varience of the sexual population in 'diagonal'
 directions, enabling it to move faster into such directions. This enables the sexual population to excel when moving in
-these 'diagonal' directions confers an advantage. Not only that, but the sexual recombination process also confers
-no disadvantage when moving 'not diagonally'.
+these 'diagonal' directions confers a fitness advantage. Not only that, but the sexual recombination process entails
+no disadvantage when moving 'not diagonally', meaning it is competitive in that case also!
 
 You can expect a full formal analysis up here by June 2020.
 
