@@ -1,11 +1,15 @@
 # Sex vs Asex : Gains in diagonality due to recombination
 A brief description:
 
-The question of why sexual replication exists becomes really interesting as you think about it. It seems, at first, to have serious diadvantages when compared to asexual replication strategies. An obvious one being that sexual populations will grow much slower - since they must expend energy and time in finding a mate. 
+The question of why sexual replication exists becomes really interesting as you think about it. It seems, at first, to have serious diadvantages when compared to asexual replication strategies. An obvious one being that sexual populations will grow much slower - since they must expend energy and time in finding a mate. If we assume that each organism only has enough energy to contribute to only two offspring, the asexual population can grow exponetially faster than the sexual population.
 <p align="center">
   <img width="250" height="140" src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/fc/Evolsex-dia1a.png/250px-Evolsex-dia1a.png">
 </p>
 
+But given the prevalence of sexual replication in nature, there must be some great benefit of replicating in this way. Also, given that even some quite simple organisms replicate sexually (e.g. Bacterial Conjugation), we want out explanation to be as "simple" as possible, avoiding things like selective mating etc.
+
+I'm approaching the question from a mathematical lens. The first stage of my research involved creating a series of simulations, for which this is the code. In these I create two populations, one which replicates sexually and the other which replicates asexually. Each organism's genes are represented by a list of n numbers (e.g. [3132, 6, 1232, 12...]) - we can think about this as a point in n dimensional euclidean space. Then we map N-dim point to some fitness value, each organism has some fitness value. It's easily visualised in the 2d case
+    
 Investigating mathematical models which attempt to explain the prevalence of Sexual replication, despite it's seeming 
 evolutionary costs. I focus on the performance of asexual vs sexual replication strategies on random fitness landscape 
 (Euclidean) in N dimensions.
