@@ -2,8 +2,9 @@
 A brief description:
 
 The question of why sexual replication exists becomes really interesting as you think about it. It seems, at first, to have serious diadvantages when compared to asexual replication strategies. An obvious one being that sexual populations will grow much slower - since they must expend energy and time in finding a mate. Infact, if we imagine each individual is only able to contribute to the same number of offspring, say two, then you would have something like this for the asexual vs sexual poulation:
-
-![alt text](https://upload.wikimedia.org/wikipedia/commons/thumb/f/fc/Evolsex-dia1a.png/250px-Evolsex-dia1a.png)
+<p align="center">
+  <img width="460" height="300" src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/fc/Evolsex-dia1a.png/250px-Evolsex-dia1a.png">
+</p>
 
 Investigating mathematical models which attempt to explain the prevalence of Sexual replication, despite it's seeming 
 evolutionary costs. I focus on the performance of asexual vs sexual replication strategies on random fitness landscape 
