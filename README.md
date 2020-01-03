@@ -4,7 +4,6 @@ A brief description:
 The question of why sexual replication exists becomes really interesting as you think about it. It seems, at first, to have serious diadvantages when compared to asexual replication strategies. An obvious one being that sexual populations will grow much slower - since they must expend energy and time in finding a mate. 
 <p align="center">
   <img width="250" height="140" src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/fc/Evolsex-dia1a.png/250px-Evolsex-dia1a.png">
-  This diagram illustrates the two-fold cost of sex. If each individual were to contribute to the same number of offspring (two), (a) the sexual population remains the same size each generation, where the (b) asexual population doubles in size each generation.
 </p>
 
 Investigating mathematical models which attempt to explain the prevalence of Sexual replication, despite it's seeming 
