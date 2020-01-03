@@ -1,5 +1,7 @@
-# Asexual-Sexual_reproduction
+# Sex vs Asex : Gains in diagonality
 A brief description:
+
+The question of why sexual evolution exists becomes more and more interesting as you think about it. 
 
 Investigating mathematical models which attempt to explain the prevalence of Sexual replication, despite it's seeming 
 evolutionary costs. I focus on the performance of asexual vs sexual replication strategies on random fitness landscape 
