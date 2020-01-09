@@ -8,7 +8,10 @@ The question of why sexual replication exists becomes really interesting as you 
 
 But given the prevalence of sexual replication in nature, there must be some great benefit of replicating in this way. Also, given that even some quite simple organisms replicate sexually (e.g. Bacterial Conjugation), we want out explanation to be as "simple" as possible, avoiding things like selective mating etc.
 
-I'm approaching the question from a mathematical lens. The first stage of my research involved creating a series of simulations, for which this is the code. In these I create two populations, one which replicates sexually and the other which replicates asexually. Each organism's genes are represented by a list of n numbers (e.g. [3132, 6, 1232, 12...]) - we can think about this as a point in n dimensional euclidean space. Then we map N-dim point to some fitness value, each organism has some fitness value. It's easily visualised in the 2d case
+I'm approaching the question from a mathematical lens. The first stage of my research involved creating a series of simulations, for which this is the code. In these I create two populations, one which replicates sexually and the other which replicates asexually. Each organism's genes are represented by a list of N numbers (e.g. [3132, 6, 1232, 12...]) - we can think about each organisms gene as representing a point in an N-dimensional space (the N here is pre-set). Then we map each sequence of genes to some fitness level. This is easily visualised for the case where N = 2. Here the organisms have a gene sequence of two numbers, say [10, 25] which can be thought of as a point in a 2d plane. Then, to each point in this 2d plane, we assign some fitness value, so you end up getting a landscape like this:
+<p align="center">
+  <img width="250" height="250" src="images/ele_70_rand_land.png">
+</p>
     
 Investigating mathematical models which attempt to explain the prevalence of Sexual replication, despite it's seeming 
 evolutionary costs. I focus on the performance of asexual vs sexual replication strategies on random fitness landscape 
