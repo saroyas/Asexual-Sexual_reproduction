@@ -18,6 +18,9 @@ Now in the simulations, I get two populations, one which replicates sexually and
   <img width="900" height="450" src="images/recombination.png">
 </p>
 
+As you can see, the population's distribution in each individual loci has remained the same, but the shape of the population has become more 'rectangular'. This is since now each loci's distribution is independent of the other. This 'becoming more rectangular' is the key to why the sexual population is going to be able to move faster in the diagonal direction in fitness landscapes.
+
+
 Now the aim is to ofcourse understand how the two populations, sexual and asexual, perform on general, random, fitness landscapes.
 
 
