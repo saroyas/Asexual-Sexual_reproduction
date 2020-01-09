@@ -8,7 +8,7 @@ stamp = str(datetime.datetime.now())
 
 num_of_times_to_test_each_landscape = 50
 assesment_print_rate = 10
-number_of_iterations_to_run_on_each_world = 10000
+number_of_iterations_to_run_on_each_world = 5000
 #%%
 
 def create_world_and_run_till_end(land, num_iterations=number_of_iterations_to_run_on_each_world):

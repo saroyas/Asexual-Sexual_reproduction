@@ -15,6 +15,7 @@ class Population():
                  survival_rate, mutation_std, landscape):
         self.population_size = population_size
         self.loci = loci
+        self.survival_rate = survival_rate
         self.organism_capacity = round(survival_rate * population_size)
         self.total_pop_mat = np.around(np.random.normal(gene_mean, gene_sd, (loci, self.population_size)), decimals=0)
         self.separator = round(self.population_size * proportion_asexual)  # To indicate where the asex ends and sex begins
@@ -70,19 +71,20 @@ class Population():
         return ((asex_avg, asex_var), (sex_avg, sex_var))
 
 
-    def survival_stage(self):
+    def survival_stage(self, normalised = True):
         # OKAY, fragile section, simulation especially vulnerable to definitions here
         # for this to work, the fitness landscape might need to be changed.
         curr_population_index = range(self.population_sizes(total=True))
 
-        total_pop_fitness_array = self.get_fitness(self.total_pop_mat)
-        # We normalize, to allow for proportional survival that's independent of how high in the
-        # clouds you are - higher means selection weaker
-        base_fitness = np.min(total_pop_fitness_array) - 1  # the minus one is to make the future base 1, not 0
-        pop_fitness_array_normed = np.subtract(total_pop_fitness_array, base_fitness)
+        pop_fitness_array = self.get_fitness(self.total_pop_mat)
+        if normalised == True:
+            # We normalize, to allow for proportional survival that's independent of how high in the
+            # clouds you are - higher means selection weaker
+            base_fitness = np.min(pop_fitness_array) - 1  # the minus one is to make the future base 1, not 0
+            pop_fitness_array = np.subtract(pop_fitness_array, base_fitness)
 
-        total_fitness = np.sum(pop_fitness_array_normed)
-        proportional_fitness = np.divide(pop_fitness_array_normed, total_fitness)
+        total_fitness = np.sum(pop_fitness_array)
+        proportional_fitness = np.divide(pop_fitness_array, total_fitness)
 
         survivor_list = np.random.choice(curr_population_index, self.organism_capacity, replace=False, p=proportional_fitness)
         survivor_list = np.sort(survivor_list)
@@ -90,15 +92,43 @@ class Population():
         self.total_pop_mat = (self.total_pop_mat)[:, survivor_list]
         self.separator = np.size(np.where(survivor_list < self.separator))
 
-    def replication_stage(self):
+    def sub_pop_survival(self, population_matrix, survival_rate, normalised=True):
 
-        def pure_replication(organisms):
+        curr_population_index = range(population_matrix.shape[1])
+
+        pop_fitness_array = self.get_fitness(population_matrix)
+        if normalised == True:
+            # We normalize, to allow for proportional survival that's independent of how high in the
+            # clouds you are - higher means selection weaker
+            base_fitness = np.min(pop_fitness_array) - 1  # the minus one is to make the future base 1, not 0
+            pop_fitness_array = np.subtract(pop_fitness_array, base_fitness)
+
+        total_fitness = np.sum(pop_fitness_array)
+        proportional_fitness = np.divide(pop_fitness_array, total_fitness)
+
+        organism_capacity = round(survival_rate * population_matrix.shape[1])
+
+        survivor_list = np.random.choice(curr_population_index, organism_capacity, replace=False, p=proportional_fitness)
+        survivor_list = np.sort(survivor_list)
+
+        return population_matrix[:, survivor_list]
+
+
+    def independent_survival_stage(self):
+        new_asex_pop = self.sub_pop_survival(population_matrix=self.asex_pop_matrix(), survival_rate=self.survival_rate)
+        new_sex_pop = self.sub_pop_survival(population_matrix=self.sex_pop_matrix(), survival_rate=self.survival_rate)
+        self.total_pop_mat = np.concatenate([new_asex_pop, new_sex_pop], axis=1)
+        self.separator = new_asex_pop.shape[1]
+
+
+    def replication_stage(self, equal_species_size = True):
+
+        def pure_replication(organisms, ratio):
             num_organisms = organisms.shape[1]
             population_index = np.arange(0, num_organisms)
-
             #OKAY, MAJOR ALTERATION, WE NOW PRESERVE SEX/ASEX POP SIZES AT HALF
             #THIS SHIFTS FOCUS FROM SURVIVAL TO AVERAGE FITNESS
-            next_gen_size = round(self.population_size * 0.5)
+            next_gen_size = round(self.population_size * ratio)
             #next_gen_size = round(num_organisms * self.repl_ratio)
 
             next_gen_chosen = np.random.choice(population_index, size=next_gen_size, replace=True)
@@ -113,10 +143,14 @@ class Population():
                 np.random.shuffle(organisms[i])
             return organisms
 
+        if equal_species_size == True:
+            ratio = 0.5
+        else:
+            ratio = self.population_sizes(asex=True)/self.population_sizes(total=True)
         # both population have replication stage
         # we seperate to help track seperator through process
-        new_asex_pop = pure_replication(self.asex_pop_matrix())
-        pre_new_sex_pop = pure_replication(self.sex_pop_matrix())
+        new_asex_pop = pure_replication(self.asex_pop_matrix(), ratio)
+        pre_new_sex_pop = pure_replication(self.sex_pop_matrix(), (1-ratio))
 
         # then the sexuals also go through recombination
         new_sex_pop = recombination(pre_new_sex_pop)
@@ -124,23 +158,40 @@ class Population():
         self.total_pop_mat = np.concatenate([new_asex_pop, new_sex_pop], axis=1)
         self.separator = new_asex_pop.shape[1]
 
-    def view_population(self):
+    def asexual_recombination(self):
+        def recombination(organisms):
+            for i in range(self.loci):
+                np.random.shuffle(organisms[i])
+            return organisms
+        new_asex_pop = recombination(self.asex_pop_matrix())
+
+        self.total_pop_mat = np.concatenate([new_asex_pop, self.sex_pop_matrix()], axis=1)
+        self.separator = new_asex_pop.shape[1]
+
+    def view_population(self, sex = True, asex = True, save = False):
         if self.loci != 2:
-            print('wrong loci count')
-            return 0
+            return 'ERROR, wrong number of loci'
 
-        f, ax = plt.subplots(figsize=(8, 8))
-        ax.set_aspect("equal")
+        x, y = [], []
+        g = sns.JointGrid(x, y, size=8)
 
-        asex_0, asex_1 = self.asex_pop_matrix()[0, :], self.asex_pop_matrix()[1, :]
+        if (not asex) or (not sex):
+            shading = True
+        else:
+            shading = False
 
-        sex_0, sex_1 = self.sex_pop_matrix()[0, :], self.sex_pop_matrix()[1, :]
-
-        ax = sns.kdeplot(asex_0, asex_1, cmap="Blues")
-        ax = sns.kdeplot(sex_0, sex_1, cmap="Reds")
-
+        if asex:
+            g.x, g.y = self.asex_pop_matrix()[0, :], self.asex_pop_matrix()[1, :]
+            g.plot_joint(sns.kdeplot, cmap="Blues", shade=shading)
+            g.plot_marginals(sns.kdeplot, color="b", shade=shading)
+        if sex:
+            g.x, g.y = self.sex_pop_matrix()[0, :], self.sex_pop_matrix()[1, :]
+            g.plot_joint(sns.kdeplot, cmap="Reds", shade=shading)
+            g.plot_marginals(sns.kdeplot, color="r", shade=shading)
         plt.show()
-
+        if save == True:
+            filename = input('What to save figure as?')
+            g.savefig(filename)
     # %%
 
 
