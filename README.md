@@ -44,9 +44,16 @@ Hence the sexual poulation only has a competitive chance against the asexual pop
 
 LOCAL LANDSCAPES PIC
 
+When focussing on these landscapes, the simulations showed a clear result:
 
+When the fitness landscape was increasing in some diagonal direction, such that a diagonal move in the landscape conferred a greater advantage than a vertical or horizontal move, THEN the sexual population increased it's average fitness faster than the asexual population.
+PIC OF DIAGONAL LANDSCAPE
 
+The clue as to why lies in our earlier image of the recombination process.
+REPEAT PIC WITH MORE EXPLANATION
+Essentially, the sexual population can use this 'rectangularising' operation to move faster in the diagonal direction. Since for the asexual population to do the same, mutations would need to occur at each of it's genes.
 
+I'm currently looking at formalising all this and trying to find a way to prove a general result. My current approach involves approximating the 'local' landscapes with a quadratic function and then intergrating over it using the population distribution as my measure.
 
 
 
