@@ -12,6 +12,10 @@ I'm approaching the question from a mathematical lens. The first stage of my res
 <p align="center">
   <img width="500" height="360" src="images/ele_70_rand_land.png">
 </p>
+
+Now in the simulations, I get two populations, the sexual replicators and teh asexuals. Before we have a replication stage however, I have a survival stage. Here, each organism has a chance of dying, depending on the fitness value of thier gene sequence. The higher your fitness value, the more likely you are to survive. I also have mutation stage, where each gene in each organisms sequence has a random chance of mutatating (in the simulations this change normally distributed around 0). This essentially just spreads the population out a little.
+
+After these survival and mutation stages (both blind to whether the populations are sexual or asexual) we have the replication stage. In my simulations, this stage is entirely independent of an organisms fitnesss values - that only matters for survivel. For the asexuals, replication is simply replicating everyone once, and then randomly replicating some organisms to replenish the original stock. 
     
 Now in the simulations, I get two populations, one which replicates sexually and the other asexually - this process is entirely independent of the fitness values assigned to each organism. For the asexuals, they simply duplicate themselves. However the sexual replication process is a lot more interesting. In my model, I essentially have the population undergo a super recombination of the genes. It is as if, for each loci (position in the gene sequence) I take the genes (numbers) of the entire population and shuffle them around randomly. So, say I had a sexual population of size 3:  [13, 123], [231, 65], [1123, 14], the first step of the super recombination would suffle the first numbers of each of these organisms randomly, so you might get [231, 123], [13, 65], [1123, 14]. Then we would shuffle the secound numbers in the gene sequence and so on. This shuffling is mathematically equivalent to the population undergoing standard, pair based, sexual mixing lots and lots. Below is a picture illustrating how such sexual recombination effects out population's distribution (in the N=2 case):
 <p align="center">
@@ -21,7 +25,6 @@ Now in the simulations, I get two populations, one which replicates sexually and
 As you can see, the population's distribution in each individual loci has remained the same, but the shape of the population has become more 'rectangular'. This is since now each loci's distribution is independent of the other. This 'becoming more rectangular' is the key to why the sexual population is going to be able to move faster in the diagonal direction in fitness landscapes.
 
 
-Now the aim is to ofcourse understand how the two populations, sexual and asexual, perform on general, random, fitness landscapes.
 
 
 Investigating mathematical models which attempt to explain the prevalence of Sexual replication, despite it's seeming 
